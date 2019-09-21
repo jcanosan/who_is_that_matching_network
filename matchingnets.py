@@ -1,4 +1,8 @@
 # matchingnets.py
+# This module contains the neural network model (inside the object MatchingNets)
+# and some functions for collecting the images needed ffor running a session
+# with the robot.
+
 
 from glob import glob
 import pathlib
@@ -134,8 +138,8 @@ def build_img_labels(all_png, all_labels, dataset):
     :param dataset: the dataset to read the images from. If it is Omniglot, the
     folder structure is different.
 
-    :return: a list with the vectors of all the images a vector with the vector
-    of the labels of each category.
+    :return: a list with the vectors of all the images and a vector with the
+    labels of each category.
     """
     all_labels_index = {}
     for i, label in zip(range(len(all_labels)), all_labels):

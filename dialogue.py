@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
+
+# dialogue.py
+# This module takes care of the dialogue management for the robot.
+# This is finite state and text-based.
+# The different states are represented inside the code as Python functions
+# inside the DialogueManagement object.
+
+
 import time
 import sys
 from glob import glob
@@ -6,7 +14,7 @@ import rospy
 from std_msgs.msg import String
 
 
-class Dialogue():
+class DialogueManagement():
     def __init__(self):
         rospy.init_node("user_iter")
         self.user_iter_pub = rospy.Publisher("user_iter_topic", String,
@@ -15,19 +23,36 @@ class Dialogue():
                                                 self.system_iter_callback,
                                                 queue_size=1)
 
+        # Declare system responses to use them in other functions when we need
+        # to return system responses from recognise.py
         self.system_iter = None
         self.label_score = None
+        # The dataset may be changed to another, but it need to match with the
+        # one in recognise.py when running both scripts
         self.dataset = "sota_dataset"
 
         # Greeting
         print("S> Hello!")
 
+        # Loops the interaction infinitely so it always return to the first
+        # state
         while True:
+            # Set the user inputs as empty to avoid Python errors
             self.user_input = ""
             self.user_input_yn = ""
+            # Initiates the initial state
             self.state_init()
 
     def state_init(self):
+        """Initial state. The system asks the user:
+            S> What do you want me to learn?
+        And the user expected answers are "what is this" or "this is a/an...".
+        Each one will trigger different functions.
+
+        If the user says something not valid, the system will say:
+            S> Sorry, I didn't understand you.
+        and after that it will repeat the same question."""
+
         whats_this = ("what is this", "what's this", "w")
         this_is = ("this is a", "this is an")
         accepted_utt = whats_this + this_is
@@ -55,6 +80,15 @@ class Dialogue():
             self.state_this_is(label)
 
     def state_this_is(self, label):
+        """First state for the "this is" interaction.
+
+        Sends to recognise.py the category said by the user to classify what
+        the camera is seeing. Waits 10 seconds for an answer from the
+        recognise.py to check that everything has been gone fine.
+
+        If it does not receive any answer, raises an error message and stops the
+        running of this script."""
+
         self.user_iter_pub.publish("THIS_IS:{0}".format(label))
 
         # For 10 seconds, checks every 500ms for an answer from the system.
@@ -223,10 +257,7 @@ class Dialogue():
     def check_num_images_label(self, label):
         """Checks the number of images that the label has."""
         label_path = "utils/datasets/{0}/{1}".format(self.dataset, label)
-        # TODO: CHECK BOTTOM LINE RUNS
-        label_path_extra = "utils/datasets/{0}/{1}".format("extra-dataset", label)
-        label_num_images = len(glob("{0}/*".format(label_path))) + \
-                           len(glob("{0}/*".format(label_path_extra)))
+        label_num_images = len(glob("{0}/*".format(label_path)))
 
         if label_num_images < 4:
             return("-5")

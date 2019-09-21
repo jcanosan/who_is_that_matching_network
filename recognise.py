@@ -1,4 +1,11 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
+
+# recognise.py
+# This module handles the image inputs from the robot camera, runs the model in
+# matchingnets.py when it is necessary, receives the user inputs from
+# dialogue.py and sends the system inputs to continue with the interaction.
+
+
 import os
 from glob import glob
 import pickle
@@ -27,32 +34,55 @@ def load_file(filepath):
 
 class ImageRecogniser:
     def __init__(self):
+        """Collects the specified images from the specified dataset"""
 
+        # The dataset may be changed to another, but it need to match with the
+        # one in dialogue.py when running both scripts
         self.dataset = "sota_dataset"
+
+        # Collect the paths of the images to be used in this section
+        # The number of shots may be changed to have more images per category
+        # The number of categories (n_labels) may also be changed to limit the
+        # number of categories that will be taken from the system
+        # n_labels = None -> it will take all the categories
         png_support_set, _, self.all_labels = \
-            collect_imgs_support_test(self.dataset, k_shot=5)
+            collect_imgs_support_test(self.dataset, k_shot=5, n_labels=None)
         print(self.all_labels)
 
+        # Build the parallel vectors of the images and the labels
         img_dataset_list_support, self.img_labels_support = \
             build_img_labels(png_support_set, self.all_labels, self.dataset)
         self.img_dataset_support = preprocess_input(img_dataset_list_support)
 
+        # Initiate the Matching Networks model
         self.model = MatchingNets()
+
+        # Encode the images
         self.img_dataset_support = \
             self.model.vgg16_encoding(self.img_dataset_support)
 
+        # Declare the layers of the Matching Networks module
         self.model.model_layers(self.img_dataset_support,
                                 self.img_labels_support)
+
+        # Train the Matching Networks on the encoded images
         self.model.run_model(self.img_dataset_support, self.img_labels_support,
                              self.img_dataset_support, self.img_labels_support)
 
-        self.user_iter = "unk"
+        # Set the user utterance to an empty string to avoid an error in the
+        # ROS callback (image_callback)
+        self.user_iter = ""
+
+        # The following variables are only used when activating the depth
+        # filtering
         self.current_depth = None
         self.region_of_interest = (1, 1000)
+
+        # Declare variables that will be used later for image from the camera
         self.display_img = None
         self.test_img = None
 
-        # Initiate rospy node
+        # Initiate rospy nodes to communicate with dialogue.py
         rospy.init_node("recognition_feedback")
         self.system_iter_pub = rospy.Publisher("/system_iter_topic", String,
                                                queue_size=1)
@@ -72,14 +102,15 @@ class ImageRecogniser:
         """
         self.user_iter = user_iter_topic.data
 
-        # If the input begins by "RTRAIN:", retrain the model on the new image
+        # If the user input starts with "RTRAIN:", retrain the model on the new
+        # image
         if self.user_iter.startswith("RTRAIN:"):
             label = self.user_iter.split(":")[1]
             self.save_img(label)
             self.retrain_model(label)
 
-        # Elif the input begins by "SAVE_IMG:", saves the last image taken by
-        # the camera with its label
+        # Elif the user input starts with "SAVE_IMG:", saves the last image
+        # taken by the camera with its label
         elif self.user_iter.startswith("SAVE_IMG:"):
             label = self.user_iter.split(":")[1]
             self.save_img(label)
@@ -87,8 +118,8 @@ class ImageRecogniser:
             self.system_iter_pub.publish("image_saved")
             self.user_iter = "unk"
 
-        # Elif the input begins by "NEW_LAB:", retrain the model on 5 images of
-        # the new label
+        # Elif the user input begins by "NEW_LAB:", retrain the model on 5
+        # images of the new label
         elif self.user_iter.startswith("NEW_LAB:"):
             label = self.user_iter.split(":")[1]
             self.save_img(label)
@@ -169,9 +200,10 @@ class ImageRecogniser:
 
     def depth_callback(self, depth_data):
         """
+        Takes the current image of the depth sensor and saves it in the variable
+        "current_depth" to use in image_callback.
 
-        :param depth_data:
-        :return:
+        :param depth_data: the image from the depth sensor.
         """
         try:
             # The depth image is a single-channel float32 image
@@ -183,10 +215,11 @@ class ImageRecogniser:
         depth_array = np.roll(depth_array, -15)
         self.current_depth = np.copy(depth_array)
 
+        # The following lines are just to test the depth filtering
         # max_depth = self.region_of_interest[1]
         # depth_array[depth_array < self.region_of_interest[0]] = max_depth
         # depth_array[depth_array > self.region_of_interest[1]] = max_depth
-        # # Normalize the depth image to fall between 0 (black) and 1 (white)
+        # Normalize the depth image to fall between 0 (black) and 1 (white)
         # cv2.normalize(depth_array, depth_array, 0, 1, cv2.NORM_MINMAX)
 
         # Display the result of the depth sensor
@@ -197,6 +230,7 @@ class ImageRecogniser:
 
     def process_image(self, frame, depth_frame):
         """
+        Applies depth filtering to the current RGB frame given a depth frame.
 
         :param frame:
         :param depth_frame:
@@ -213,10 +247,10 @@ class ImageRecogniser:
 
         :param label: the label of the image.
         """
-        # dataset_to_save = self.dataset
-        # New images will be saved outside SOTA dataset, unless the line above
-        # is uncommented
-        dataset_to_save = "extra-dataset"
+        dataset_to_save = self.dataset
+        # New images will be saved outside SOTA dataset if the line below is
+        # uncommented
+        # dataset_to_save = "extra-dataset"
 
         label_path = "utils/datasets/{0}/{1}".format(dataset_to_save, label)
         if not os.path.exists(label_path):
