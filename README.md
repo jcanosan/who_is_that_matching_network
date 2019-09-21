@@ -25,21 +25,21 @@ These are the requisites to replicate this robot using the same hardware (Kinect
 ```source /opt/ros/kinetic/setup.bash if the environment was not ready```
 4. Create a workspace with catkin and Python2 and source it
 ```
-mkdir -p ~/ROS\_WORKSPACE\_FOLDER/src
-cd ~/ROS\_WORKSPACE\_FOLDER/
-catkin\_make --cmake-args -DPYTHON\_VERSION=2
-. ~/ROS\_WORKSPACE\_FOLDER/devel/setup.bash
+mkdir -p ~/ROS_WORKSPACE_FOLDER/src
+cd ~/ROS_WORKSPACE_FOLDER/
+catkin_make --cmake-args -DPYTHON_VERSION=2
+. ~/ROS_WORKSPACE_FOLDER/devel/setup.bash
 ```
 5. Create and build a package
 ```
-cd ~/ROS\_WORKSPACE\_FOLDER/src
-catkin\_create\_pkg NAME\_OF\_THE\_PACKAGE std\_msgs rospy
+cd ~/ROS_WORKSPACE_FOLDER/src
+catkin_create_pkg NAME_OF_THE_PACKAGE std_msgs rospy
 ```
 6. Rebuild the workspace and source it again
 ```
-cd ~/ROS\_WORKSPACE\_FOLDER/
-catkin\_make --cmake-args -DPYTHON\_VERSION=2
-. ~/ROS\_WORKSPACE\_FOLDER/devel/setup.bash
+cd ~/ROS_WORKSPACE_FOLDER/
+catkin_make --cmake-args -DPYTHON_VERSION=2
+. ~/ROS_WORKSPACE_FOLDER/devel/setup.bash
 ```
 
 ## Running instructions
@@ -53,16 +53,16 @@ nohup roslaunch freenect_launch freenect.launch &
 
 2. Terminal 1: recognise.py
 ```
-. ~/ROS\_WORKSPACE\_FOLDER/devel/setup.bash
-chmod +x ~/ROS\_WORKSPACE\_FOLDER/src/NAME\_OF\_THE\_PACKAGE/src/dialogue.py
-chmod +x ~/ROS\_WORKSPACE\_FOLDER/src/NAME\_OF\_THE\_PACKAGE/src/recognise.py
-cd ~/ROS\_WORKSPACE\_FOLDER/src/NAME\_OF\_THE\_PACKAGE/src/
-rosrun NAME\_OF\_THE\_PACKAGE recognise.py
+. ~/ROS_WORKSPACE_FOLDER/devel/setup.bash
+chmod +x ~/ROS_WORKSPACE_FOLDER/src/NAME_OF_THE_PACKAGE/src/dialogue.py
+chmod +x ~/ROS_WORKSPACE_FOLDER/src/NAME_OF_THE_PACKAGE/src/recognise.py
+cd ~/ROS_WORKSPACE_FOLDER/src/NAME_OF_THE_PACKAGE/src/
+rosrun NAME_OF_THE_PACKAGE recognise.py
 ```
 
 3. Terminal 2: dialogue.py
 ```
-. ~/ROS\_WORKSPACE\_FOLDER/devel/setup.bash
-cd ~/ROS\_WORKSPACE\_FOLDER/src/mlt_project/src/
-rosrun NAME\_OF\_THE\_PACKAGE dialogue.py
+. ~/ROS_WORKSPACE_FOLDER/devel/setup.bash
+cd ~/ROS_WORKSPACE_FOLDER/src/mlt_project/src/
+rosrun NAME_OF_THE_PACKAGE dialogue.py
 ```
