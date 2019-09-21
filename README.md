@@ -75,3 +75,6 @@ rosrun NAME_OF_THE_PACKAGE recognise.py
 cd ~/ROS_WORKSPACE_FOLDER/src/mlt_project/src/
 rosrun NAME_OF_THE_PACKAGE dialogue.py
 ```
+
+## Cite
+Coming soon...
