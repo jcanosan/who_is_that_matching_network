@@ -18,11 +18,18 @@ These are the requisites to replicate this robot using the same hardware (Kinect
 - [Tensorflow](https://www.tensorflow.org/install/)
 
 ## Installation
-1. Install ROS Kinetic, the Freenect drivers and rospy.
-```sudo apt-get install freenect ros-kinetic-freenect-stack```
+1. Install ROS Kinetic, the Freenect drivers and rospy. For the Freenect run:
+```
+sudo apt-get install freenect ros-kinetic-freenect-stack
+```
+
 2. Install all the required Python2.7 libraries according to the instructions on their websites.
+
 3. If the ROS enviroment is not ready, run:
-```source /opt/ros/kinetic/setup.bash if the environment was not ready```
+```
+source /opt/ros/kinetic/setup.bash if the environment was not ready
+```
+
 4. Create a workspace with catkin and Python2 and source it
 ```
 mkdir -p ~/ROS_WORKSPACE_FOLDER/src
@@ -30,11 +37,13 @@ cd ~/ROS_WORKSPACE_FOLDER/
 catkin_make --cmake-args -DPYTHON_VERSION=2
 . ~/ROS_WORKSPACE_FOLDER/devel/setup.bash
 ```
+
 5. Create and build a package
 ```
 cd ~/ROS_WORKSPACE_FOLDER/src
 catkin_create_pkg NAME_OF_THE_PACKAGE std_msgs rospy
 ```
+
 6. Rebuild the workspace and source it again
 ```
 cd ~/ROS_WORKSPACE_FOLDER/
@@ -45,7 +54,7 @@ catkin_make --cmake-args -DPYTHON_VERSION=2
 ## Running instructions
 For running, we recommend you to use two different terminals.
 
-1. Source and run ROS
+1. Any terminal: source and run ROS
 ```
 source /opt/ros/kinetic/setup.bash
 nohup roslaunch freenect_launch freenect.launch &
