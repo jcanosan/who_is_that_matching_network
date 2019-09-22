@@ -83,7 +83,7 @@ The images were taken using the same Kinect v1 RGB camera. The images taken are 
 
 SOTA is available inside this same repository. 
 
-This dataset is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). Anyone is free to share an addapt this dataset as long as appropriate credit is given to the original author.
+This dataset is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). Anyone is free to share an adapt this dataset as long as appropriate credit is given to the original author.
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">Small Objects daTAset (SOTA)</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/jcanosan/Interactive-robot-with-neural-networks/tree/master/utils/datasets/sota_dataset" property="cc:attributionName" rel="cc:attributionURL">José Miguel Cano Santín</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 
