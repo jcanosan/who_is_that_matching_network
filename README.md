@@ -89,7 +89,7 @@ This dataset is licensed under Creative Commons Attribution 4.0 International (C
 
 ## Cite this work
 ```
-@book{degraaf2016,
+@book{cano:2019,
 	author  = {Cano Santín, José Miguel},
 	title   = {Fast visual grounding in interaction},
 	year    = "2019",
