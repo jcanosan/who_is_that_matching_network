@@ -5,7 +5,7 @@ This repository provides a Python implementation using Keras and Tensorflow of t
 This project is part of the Master's Thesis project for the MLT programme at the University of Gothenburg.
 
 ## Requisites
-These are the requisites to replicate this robot using the same hardware (Kinect v1). Potentially, this robot could run with any RGB camera as long as it is supported by the ROS community.
+These are the requisites to run this robot using the same hardware (Kinect v1). Potentially, this robot could run with any RGB camera as long as it is supported by the ROS community.
 
 - [ROS Kinetic](http://wiki.ros.org/kinetic)
 - [An OS supported by ROS Kinetic](http://wiki.ros.org/kinetic#Platforms)
@@ -27,7 +27,7 @@ sudo apt-get install freenect ros-kinetic-freenect-stack
 
 3. If the ROS enviroment is not ready, run:
 ```
-source /opt/ros/kinetic/setup.bash if the environment was not ready
+source /opt/ros/kinetic/setup.bash
 ```
 
 4. Create a workspace with catkin and Python2 and source it
@@ -54,7 +54,7 @@ catkin_make --cmake-args -DPYTHON_VERSION=2
 ## Running instructions
 For running, we recommend you to use two different terminals.
 
-1. Any terminal: source and run ROS
+1. Any of the two terminals: source and run ROS
 ```
 source /opt/ros/kinetic/setup.bash
 nohup roslaunch freenect_launch freenect.launch &
@@ -72,7 +72,7 @@ rosrun NAME_OF_THE_PACKAGE recognise.py
 3. Terminal 2: dialogue.py
 ```
 . ~/ROS_WORKSPACE_FOLDER/devel/setup.bash
-cd ~/ROS_WORKSPACE_FOLDER/src/mlt_project/src/
+cd ~/ROS_WORKSPACE_FOLDER/src/NAME_OF_THE_PACKAGE/src/
 rosrun NAME_OF_THE_PACKAGE dialogue.py
 ```
 
