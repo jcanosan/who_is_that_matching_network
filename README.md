@@ -2,7 +2,7 @@
 
 This repository provides a Python implementation using Keras and Tensorflow of the [Matching Networks for One Shot Learning](http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf) paper and transfer learning in an interactive robot scenario using a Kinect v1 camera with [ROS Kinetic](http://wiki.ros.org/kinetic).
 
-This project is part of the Master's Thesis project for the MLT programme at the University of Gothenburg.
+This project is part of the Master's Thesis project for the MLT programme at the University of Gothenburg (see how to cite this works at the bottom).
 
 ## Requisites
 These are the requisites to run this robot using the same hardware (Kinect v1). Potentially, this robot could run with any RGB camera as long as it is supported by the ROS community.
