@@ -1,21 +1,14 @@
-# Interactive robot with Neural Networks
+# "Who is that Pokémon?" with Matching Networks
 
-This repository provides a Python implementation using Keras and Tensorflow of the [Matching Networks for One Shot Learning](http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf) paper and transfer learning in an interactive robot scenario using a Kinect v1 camera with [ROS Kinetic](http://wiki.ros.org/kinetic).
+This project provides an implementation of Matching Networks as described in the paper [Matching Networks for One Shot Learning](http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf) in PyTorch.
 
-This project is part of the Master's Thesis project for the MLT programme at the University of Gothenburg (see how to cite this work at the bottom).
+This is based in the implementation made on the paper [Fast visual grounding in interaction: bringing few-shot learning with neural networks to an interactive robot](https://aclanthology.org/2020.pam-1.7/), which stems from my Master's Thesis project for the Master's in Language Technology at the University of Gothenburg.
 
-## Requisites
-These are the requisites to run this robot using the same hardware (Kinect v1). Potentially, this robot could run with any RGB camera as long as it is supported by the ROS community.
-
-- [ROS Kinetic](http://wiki.ros.org/kinetic)
-- [An OS supported by ROS Kinetic](http://wiki.ros.org/kinetic#Platforms)
-- [Freenect drivers](https://github.com/OpenKinect/libfreenect)
-- [rospy](http://wiki.ros.org/rospy)
-- Python 2.7
+## Minimum requirements
+- Python 3
 - [NumPy](http://www.numpy.org/)
 - [OpenCV-python](https://pypi.org/project/opencv-python/)
-- [Keras](https://keras.io/)
-- [Tensorflow](https://www.tensorflow.org/install/)
+- [PyTorch](https://pytorch.org/)
 
 ## Installation
 1. Install ROS Kinetic, the Freenect drivers and rospy. For the Freenect run:
@@ -76,7 +69,7 @@ cd ~/ROS_WORKSPACE_FOLDER/src/NAME_OF_THE_PACKAGE/src/
 rosrun NAME_OF_THE_PACKAGE dialogue.py
 ```
 
-## SOTA dataset
+## SOTA dataset  # TODO CHANGE WITH POKEMON DATASET
 SOTA (Small Objects daTAset) is a dataset of 400 images distributed equally into 20 categories. These images portrait a single object of interest which is normally centered in the image.
 
 The images were taken using the same Kinect v1 RGB camera. The images taken are resized to 224x224 pixels since it is the default size that VGG16 and most deep image encoders use by default.
@@ -86,14 +79,3 @@ SOTA is available inside this same repository.
 This dataset is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). Anyone is free to share an adapt this dataset as long as appropriate credit is given to the original author.
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">Small Objects daTAset (SOTA)</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/jcanosan/Interactive-robot-with-neural-networks/tree/master/utils/datasets/sota_dataset" property="cc:attributionName" rel="cc:attributionURL">José Miguel Cano Santín</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-
-## Cite this work
-```
-@book{cano:2019,
-	author  = {Cano Santín, José Miguel},
-	title   = {Fast visual grounding in interaction},
-	year    = "2019",
-	publisher = {Master’s thesis, Department of Philosophy, Linguistics and Theory of Science. University of Gothenburg},
-	url =    "http://hdl.handle.net/2077/62035"
-}
-```
