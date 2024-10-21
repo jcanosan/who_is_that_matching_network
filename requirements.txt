@@ -1,0 +1,7 @@
+numpy==2.1.2
+matplotlib==3.9.2
+opencv-python-headless==4.10.0.84
+scikit-learn==1.5.2
+torch==2.5.0
+torch_directml
+torchvision==0.20.0
