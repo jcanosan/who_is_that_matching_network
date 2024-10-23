@@ -18,16 +18,14 @@ class VGG16Features(nn.Module):
         self.cnn_avgpool = self.transfer_vgg16.avgpool
 
     def forward(self, x: Tensor) -> Tensor:
-        x = nn.functional.relu(self.cnn_features(x))
+        x = self.cnn_features(x)
         return self.cnn_avgpool(x)
 
 
 class ClassifierNetwork(nn.Module):
-    def __init__(self):
+    def __init__(self, in_features):
         super().__init__()
-        self.input = nn.Linear(
-            7, 16
-        )  # transfer_cnn_model.classifier[0].in_features
+        self.input = nn.Linear(in_features, 16)
         self.fc1 = nn.Linear(16, 32)
         self.fc2 = nn.Linear(32, 16)
         self.output = nn.Linear(16, 1)
@@ -43,7 +41,9 @@ class MatchingNetworks:
     def __init__(self, train_loader, test_loader):
         self._cnn_network = VGG16Features()
         self._cnn_network.eval()
-        self._classifier_network = ClassifierNetwork()
+        self._classifier_network = ClassifierNetwork(
+            in_features=self._cnn_network.cnn_avgpool.output_size[0]
+        )
         self._lossfun = nn.MSELoss()
         self._optimizer = torch.optim.Adam(
             self._classifier_network.parameters(), lr=.01
