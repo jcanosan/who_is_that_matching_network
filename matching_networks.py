@@ -23,39 +23,68 @@ class VGG16Features(nn.Module):
 
 
 class ClassifierNetwork(nn.Module):
-    def __init__(self, in_features):
+    def __init__(self, in_features, cnn_support_imgs_shape, num_labels):
         super().__init__()
-        self.input = nn.Linear(in_features, 16)
-        self.fc1 = nn.Linear(16, 32)
-        self.fc2 = nn.Linear(32, 16)
-        self.output = nn.Linear(16, 1)
+        num_imgs_support = cnn_support_imgs_shape[0]
+        memory_imgs_support = cnn_support_imgs_shape[1]
+        print("NUM LABELS", num_labels)
+
+        # g - support set (encoded images)
+        self.img_set_memory = nn.AvgPool2d(
+            in_features, stride=len(in_features)
+        )
+
+        # f - target
+        self.img_target = nn.AvgPool2d(in_features, stride=len(in_features))
+
+        self.output = nn.Linear(1, 1)
 
     def forward(self, x: Tensor) -> Tensor:
-        x = nn.functional.relu(self.input(x))
-        x = nn.functional.relu(self.fc1(x))
-        x = nn.functional.relu(self.fc2(x))
+        # x = nn.functional.relu(self.input(x))
+        # x = nn.functional.relu(self.fc1(x))
+        # x = nn.functional.relu(self.fc2(x))
+        x = self.img_set_memory(x)
         return self.output(x)
 
 
 class MatchingNetworks:
     def __init__(self, train_loader, test_loader):
-        self._cnn_network = VGG16Features()
-        self._cnn_network.eval()
-        self._classifier_network = ClassifierNetwork(
-            in_features=self._cnn_network.cnn_avgpool.output_size[0]
+        self._device = torch.device(
+            "cuda:0" if torch.cuda.is_available() else "cpu"
         )
-        self._lossfun = nn.MSELoss()
-        self._optimizer = torch.optim.Adam(
-            self._classifier_network.parameters(), lr=.01
-        )
+
         self._train_loader = train_loader
         self._test_loader = test_loader
         self._train_labels = torch.tensor([
             element[1] for element in self._train_loader
         ])
-        self._device = torch.device(
-            "cuda:0" if torch.cuda.is_available() else "cpu"
+
+        self._cnn_network = VGG16Features()
+        self._cnn_outputs = self.cnn_encoding()
+        print(self._cnn_outputs.shape)
+
+        self._classifier_network = ClassifierNetwork(
+            in_features=self._cnn_network.cnn_avgpool.output_size,
+            cnn_support_imgs_shape=self._cnn_outputs.shape,
+            num_labels=self._train_labels.shape[0]
         )
+
+        # self._lossfun = nn.MSELoss()
+        # self._optimizer = torch.optim.Adam(
+        #     self._classifier_network.parameters(), lr=.01
+        # )
+
+    def cnn_encoding(self):
+        self._cnn_network.eval()
+        cnn_outputs = torch.empty((len(self._train_loader), 512, 7, 7),
+                                  dtype=torch.float32)
+        print("CNN encoding start")
+        for i, (input, label) in enumerate(self._train_loader):
+            img_input = input.to(self._device, dtype=torch.float32)
+            cnn_output = self._cnn_network(img_input)
+            cnn_outputs[i] = cnn_output
+        print("CNN encoding done")
+        return cnn_outputs
 
     def train(self, num_epochs=10):
         losses = torch.zeros(num_epochs)
@@ -65,8 +94,10 @@ class MatchingNetworks:
         for epochi in range(num_epochs):
             print(f"Epoch {epochi + 1}")
             batch_loss = []
-            for input, label in self._train_loader:
-                input = input.to(self._device, dtype=torch.float32)
+            for cnn_output, label in zip(
+                self._cnn_outputs, self._train_labels
+            ):
+                cnn_output = cnn_output.to(self._device, dtype=torch.float32)
                 label = label.to(self._device, dtype=torch.float32)
                 # print()
                 # print("input", input.dtype)
@@ -74,12 +105,8 @@ class MatchingNetworks:
                 # print("label", label.dtype)
                 # print("label", label)
 
-                cnn_outputs = self._cnn_network(input)
-                # print("cnn_outputs", cnn_outputs.dtype)
-                # print("cnn_outputs", cnn_outputs.shape)
-
                 # forward pass and loss
-                outputs = self._classifier_network(cnn_outputs)
+                outputs = self._classifier_network(cnn_output)
                 # print("outputs", outputs.dtype)
                 # print("outputs", outputs.shape)
                 loss = self._lossfun(outputs, label)
